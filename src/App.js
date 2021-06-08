@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 const localURL = `http://localhost:5000/`
@@ -20,12 +19,19 @@ function App() {
 
   const changeHandler = (e) => {
     setSelectedFile(e.target.files[0]);
-    setSelectedFile(true);
+    setIsFilePicked(true);
   };
+  
   const handleSubmission = (e) => {
     const formData = new FormData();
     formData.append('File', selectedFile);
-    axios.post(`${localURL}/api/pitches`)
+    axios.post(`${localURL}/api/pitches`,formData)
+      .then(res=>{
+        console.log(res.data);
+      })
+      .catch(err=>{
+        console.log(err)
+      })
   };
   return (
     <div className="App">
@@ -39,7 +45,7 @@ function App() {
         ) : (
           <p>select a file to show details</p>
         )}
-        <button>Submit pitch</button>
+        <button onClick={handleSubmission}>Submit pitch</button>
       </header>
     </div>
   );
