@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
-const localURL = `http://localhost:5000/`
+const localURL = `http://localhost:8000`
 function App() {
   const [message, setMessage] = useState(`Nothing`);
   const [selectedFile, setSelectedFile] = useState();
@@ -12,27 +12,30 @@ function App() {
       .get(localURL)
       .then((res) => {
         setMessage(res.data.message);
-        console.log(res);
       })
       .catch((err) => console.log(err));
   }, []);
 
   const changeHandler = (e) => {
     setSelectedFile(e.target.files[0]);
+    
     setIsFilePicked(true);
   };
   
   const handleSubmission = (e) => {
     const formData = new FormData();
-    formData.append('File', selectedFile);
-    axios.post(`${localURL}/api/pitches`,formData)
+      
+    formData.append('file',selectedFile);
+    
+    axios.post(`${localURL}/upload`,formData)
       .then(res=>{
-        console.log(res.data);
+        console.log(res.statusText);
       })
       .catch(err=>{
         console.log(err)
-      })
+      });
   };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -41,6 +44,7 @@ function App() {
         {isFilePicked ? (
           <div>
             <p>Filename:{selectedFile.name}</p>
+            <p>Filename:{selectedFile.type}</p>
           </div>
         ) : (
           <p>select a file to show details</p>
