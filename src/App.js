@@ -34,6 +34,9 @@ function App() {
       .catch(err=>{
         console.log(err)
       });
+    setMessage("File upload complete")
+    setIsFilePicked(false)
+    setSelectedFile()
   };
 
   return (
@@ -43,8 +46,8 @@ function App() {
         <input type="file" name="file" onChange={changeHandler} />
         {isFilePicked ? (
           <div>
-            <p>Filename:{selectedFile.name}</p>
-            <p>Filename:{selectedFile.type}</p>
+            <p>File name:{selectedFile.name}</p>
+            <p>File type:{selectedFile.type}</p>
           </div>
         ) : (
           <p>select a file to show details</p>
