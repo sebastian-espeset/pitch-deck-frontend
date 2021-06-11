@@ -9,15 +9,13 @@ const localURL = `http://localhost:5000`;
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function App() {
-  const [message, setMessage] = useState(`Nothing`);
+  const [message, setMessage] = useState(`Please upload a pdf to upload`);
   const [selectedFile, setSelectedFile] = useState();
-  const [isFilePicked, setIsFilePicked] = useState(false);
   const [pdfPath, setPdfPath] = useState();
   const [numPages, setNumPages] = useState(null);
 
   const changeHandler = (e) => {
     setSelectedFile(e.target.files[0]);
-    setIsFilePicked(true);
   };
 
   const handleSubmission = (e) => {
@@ -32,31 +30,19 @@ function App() {
         console.log(err);
       });
     setMessage("File upload complete");
-    setIsFilePicked(false);
     setSelectedFile();
   };
-//   <Document
-//     file={data}
-//     onLoadSuccess={({ numPages })=>setNumPages(numPages)}
-// >
-//     {Array.apply(null, Array(numPages))
-//     .map((x, i)=>i+1)
-//     .map(page => <Page pageNumber={page}/>)}
-// </Document>
 
   return (
     <div className="App">
       <header className="App-header">
-        {message ? <h1>{message}</h1> : `nothing`}
-        <input type="file" name="file" onChange={changeHandler} />
-        {isFilePicked ? (
-          <div>
-            <p>File name:{selectedFile.name}</p>
-            <p>File type:{selectedFile.type}</p>
-          </div>
-        ) : (
-          <p>select a file to show details</p>
-        )}
+        <h2>{message}</h2>
+        <input
+          type="file"
+          name="file"
+          placeholder=""
+          onChange={changeHandler}
+        />
         <button onClick={handleSubmission}>Submit pitch</button>
         <div>
           {pdfPath ? (
@@ -65,11 +51,13 @@ function App() {
                 url: `${localURL}/api/pitches${pdfPath}`,
               }}
               loading="loading pdf"
-              onLoadSuccess={({ numPages})=>setNumPages(numPages)}
+              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
             >
               {Array.apply(null, Array(numPages))
-              .map((x,i)=>i+1)
-              .map(page => <Page pageNumber={page}/>)}
+                .map((x, i) => i + 1)
+                .map((page) => (
+                  <Page pageNumber={page} />
+                ))}
             </Document>
           ) : (
             <div>Please upload a Document</div>
