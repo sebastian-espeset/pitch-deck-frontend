@@ -12,10 +12,8 @@ function App() {
   const [message, setMessage] = useState(`Nothing`);
   const [selectedFile, setSelectedFile] = useState();
   const [isFilePicked, setIsFilePicked] = useState(false);
-  const [pdfDisplay, setPdfDisplay] = useState();
   const [pdfPath, setPdfPath] = useState();
-  let [pdfPage,setPdfPage]=useState(1)
-
+  const [numPages, setNumPages] = useState(null);
 
   const changeHandler = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -25,12 +23,10 @@ function App() {
   const handleSubmission = (e) => {
     const data = new FormData();
     data.append("file", selectedFile);
-    console.log(data);
     axios
       .post(`${localURL}/api/pitches`, data)
       .then((res) => {
         setPdfPath(res.data.file);
-        console.log("pdf path", pdfPath);
       })
       .catch((err) => {
         console.log(err);
@@ -39,15 +35,15 @@ function App() {
     setIsFilePicked(false);
     setSelectedFile();
   };
-  
-  const incPage=(e)=>{
-    setPdfPage(pdfPage++)
-    console.log(pdfPage)
-  }
-  const decPage=(e)=>{
-   setPdfPage(pdfPage--)
-   console.log(pdfPage)
-  }
+//   <Document
+//     file={data}
+//     onLoadSuccess={({ numPages })=>setNumPages(numPages)}
+// >
+//     {Array.apply(null, Array(numPages))
+//     .map((x, i)=>i+1)
+//     .map(page => <Page pageNumber={page}/>)}
+// </Document>
+
   return (
     <div className="App">
       <header className="App-header">
@@ -63,16 +59,21 @@ function App() {
         )}
         <button onClick={handleSubmission}>Submit pitch</button>
         <div>
-          {pdfPath?<Document
-            file={{
-              url: `${localURL}/api/pitches${pdfPath}`,
-            }}
-            loading="loading pdf"
-          >
-            <Page pageNumber={pdfPage} />
-            <button onClick={incPage}>Page ++</button>
-            <button onClick={decPage}>Page --</button>
-          </Document>:<div>Please upload a Document</div>}
+          {pdfPath ? (
+            <Document
+              file={{
+                url: `${localURL}/api/pitches${pdfPath}`,
+              }}
+              loading="loading pdf"
+              onLoadSuccess={({ numPages})=>setNumPages(numPages)}
+            >
+              {Array.apply(null, Array(numPages))
+              .map((x,i)=>i+1)
+              .map(page => <Page pageNumber={page}/>)}
+            </Document>
+          ) : (
+            <div>Please upload a Document</div>
+          )}
         </div>
       </header>
     </div>
