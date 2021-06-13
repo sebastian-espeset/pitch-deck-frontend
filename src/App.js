@@ -1,59 +1,75 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import { useState } from "react";
 import axios from "axios";
-const localURL = `http://localhost:8000`
-function App() {
-  const [message, setMessage] = useState(`Nothing`);
-  const [selectedFile, setSelectedFile] = useState();
-  const [isFilePicked, setIsFilePicked] = useState(false);
+import { Document, Page, pdfjs } from "react-pdf";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-  useEffect(() => {
-    axios
-      .get(localURL)
-      .then((res) => {
-        setMessage(res.data.message);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+const localURL = `http://localhost:5000`;
+const URL = `https://sebastian-pitch-deck.herokuapp.com`;
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
+function App() {
+  const [message, setMessage] = useState(`Please upload a pdf to upload`);
+  const [selectedFile, setSelectedFile] = useState("");
+  const [pdfPath, setPdfPath] = useState();
+  const [numPages, setNumPages] = useState(null);
 
   const changeHandler = (e) => {
     setSelectedFile(e.target.files[0]);
-    
-    setIsFilePicked(true);
   };
-  
+
   const handleSubmission = (e) => {
-    const formData = new FormData();
-      
-    formData.append('file',selectedFile);
-    
-    axios.post(`${localURL}/upload`,formData)
-      .then(res=>{
-        console.log(res.statusText);
+    const data = new FormData();
+    data.append("file", selectedFile);
+    axios
+      .post(`${URL}/api/pitches`, data)
+      .then((res) => {
+        setPdfPath(res.data.file);
       })
-      .catch(err=>{
-        console.log(err)
+      .catch((err) => {
+        console.log(err);
       });
-    setMessage("File upload complete")
-    setIsFilePicked(false)
-    setSelectedFile()
+    setMessage("File upload complete");
+    setSelectedFile(null);
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        {message ? <h1>{message}</h1> : `nothing`}
-        <input type="file" name="file" onChange={changeHandler} />
-        {isFilePicked ? (
-          <div>
-            <p>File name:{selectedFile.name}</p>
-            <p>File type:{selectedFile.type}</p>
-          </div>
+    <div className="container is-fluid">
+      <section className="hero is-primary ">
+        <div className="hero-body">
+          <p className="title">A company's name</p>
+          <p className="subtitle">And, like, a cool sub-title</p>
+          <input
+            className="button is-dark"
+            type="file"
+            name="file"
+            onChange={changeHandler}
+          />
+          <button className="button is-light" onClick={handleSubmission}>
+            Submit pitch
+          </button>
+        </div>
+      </section>
+      <div className="container">
+        {pdfPath ? (
+          <Document
+            className="content"
+            file={{
+              url: `${URL}/api/pitches${pdfPath}`,
+            }}
+            loading="loading pdf"
+            onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+          >
+            {Array.apply(null, Array(numPages))
+              .map((x, i) => i + 1)
+              .map((page) => (
+                <Page pageNumber={page} />
+              ))}
+          </Document>
         ) : (
-          <p>select a file to show details</p>
+          <div></div>
         )}
-        <button onClick={handleSubmission}>Submit pitch</button>
-      </header>
+      </div>
     </div>
   );
 }
