@@ -4,7 +4,9 @@ import { Document, Page, pdfjs } from "react-pdf";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
 const localURL = `http://localhost:5000`;
-const URL = `https://sebastian-pitch-deck.herokuapp.com`;
+
+// URL below references a hosted api that I cannot get to work with my s3 bucket 
+// const URL = `https://sebastian-pitch-deck.herokuapp.com`;
 
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
