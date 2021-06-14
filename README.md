@@ -1,8 +1,12 @@
-# Pitch deck front end
+## Pitch deck front end
+### A real-old-country-boondoggle
+-A react app with the most basic of styling. Uses axios to send a post request of multi-part/form-data to the api.
+-Uses axios to receive t
+
+
+
+
 ## Scripts
-
-In the project directory, you can run:
-
 ### `npm start`
 
 Runs the app in the development mode.\
