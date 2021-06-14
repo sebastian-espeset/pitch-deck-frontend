@@ -22,7 +22,7 @@ function App() {
     const data = new FormData();
     data.append("file", selectedFile);
     axios
-      .post(`${URL}/api/pitches`, data)
+      .post(`${localURL}/api/pitches`, data)
       .then((res) => {
         setPdfPath(res.data.file);
       })
@@ -55,7 +55,7 @@ function App() {
           <Document
             className="content"
             file={{
-              url: `${URL}/api/pitches${pdfPath}`,
+              url: `${localURL}/api/pitches${pdfPath}`,
             }}
             loading="loading pdf"
             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
