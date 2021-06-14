@@ -1,12 +1,11 @@
 ## Pitch deck front end
-### A real-old-country-boondoggle
 - A react app with the most basic of styling, using [Bulma](https://bulma.io/documentation/overview/start/). 
+- User can post and view a pdf version of a funding pitch.
 - Uses axios to send a post request of multi-part/form-data to the api.
 - Displays most recently uploaded pdf.
-- Back-end repo: https://github.com/sebastian-espeset/pitch-deck-backend
+- [Back-end repo](https://github.com/sebastian-espeset/pitch-deck-backend)
 ## Scripts
-
-### `npm start`
+### npm start
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
